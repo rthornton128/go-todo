@@ -1,0 +1,30 @@
+name: go-todo
+
+type: go
+
+up:
+  - go:
+      version: 1.17.2
+      modules: true
+      tools:
+        - golint
+        - errcheck
+  - railgun
+
+env:
+  HOST: "localhost"
+  PORT: "8080"
+
+# `dev run` runs `dev build` and then `dev run-built` if these are both defined.
+commands:
+  build:
+    run: go build -o go-todo
+  run-built:
+    desc: |
+      Run the target after `dev build`.
+      `dev run` is a special command that will run `dev build` and then `dev run-built` if they are both defined.
+    run: ./go-todo
+  test:
+    run: go test ./...
+  style:
+    run: 'golint ./... && errcheck ./...'

@@ -12,9 +12,6 @@ go-todo
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Environment build tool
-dev.yml
-
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
