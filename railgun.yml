@@ -1,0 +1,17 @@
+name: go-todo
+
+vm:
+  image: /opt/dev/misc/railgun-images/default
+  ip_address: 192.168.64.154
+  memory: 2G
+  cores: 2
+
+volumes:
+  root: 2G
+
+services:
+  - mysql
+  - nginx
+
+hostnames:
+  - go-todo.myshopify.io: {proxy_to_host_port: 8080}
