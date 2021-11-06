@@ -11,11 +11,11 @@ import (
 )
 
 type App struct {
-	host, port string
+	env *Environment
 }
 
-func NewApp(host, port string) *App {
-	return &App{host: host, port: port}
+func NewApp(env *Environment) *App {
+	return &App{env: env}
 }
 
 func (app App) Run() {
@@ -32,5 +32,5 @@ func (app App) Run() {
 }
 
 func (app App) hostPort() string {
-	return net.JoinHostPort(app.host, app.port)
+	return net.JoinHostPort(app.env.Host, app.env.Port)
 }

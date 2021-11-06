@@ -1,17 +1,17 @@
 package main
 
 import (
-	"os"
+	"log"
 
 	"github.com/rs/zerolog"
 )
 
 func main() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	env := NewEnvironment()
+	if env.IsDevelopment() {
+		log.SetOutput(zerolog.NewConsoleWriter())
+	}
 
-	host := os.Getenv("HOST")
-	port := os.Getenv("PORT")
-
-	app := NewApp(host, port)
+	app := NewApp(env)
 	app.Run()
 }

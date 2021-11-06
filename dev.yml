@@ -14,6 +14,7 @@ up:
 env:
   HOST: "localhost"
   PORT: "8080"
+  ENV: "development"
 
 # `dev run` runs `dev build` and then `dev run-built` if these are both defined.
 commands:
