@@ -14,9 +14,8 @@ func NewEnvironment() *Environment {
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
-	var mode string
-	var ok bool
-	if mode, ok = os.LookupEnv("ENV"); ok {
+	mode, ok := os.LookupEnv("MODE")
+	if !ok {
 		mode = "production"
 	}
 

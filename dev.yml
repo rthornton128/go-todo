@@ -12,9 +12,9 @@ up:
   - railgun
 
 env:
-  HOST: "localhost"
+  HOST: ""
   PORT: "8080"
-  ENV: "development"
+  MODE: "development"
 
 # `dev run` runs `dev build` and then `dev run-built` if these are both defined.
 commands:
