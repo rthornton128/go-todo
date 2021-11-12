@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 )
 
 type App struct {
+	db     *sql.DB
 	env    *Environment
 	logger zerolog.Logger
 }
@@ -36,13 +38,19 @@ func (app App) Run() {
 		os.Exit(0)
 	}()
 
-	fmt.Println("Server: https://go-todo.myshopify.io")
+	if err := app.openDB(); err != nil {
+		app.logger.Fatal().Err(err).Msg("failed to open DB")
+	}
+	defer app.closeDB()
+
+	app.logger.Info().Msg("Connected to DB")
 
 	app.logger.Info().
 		Str("host_port", app.hostPort()).
 		Str("mode", app.env.Mode).
 		Msg("listening for connections")
 
+	fmt.Println("Server: https://go-todo.myshopify.io")
 	err := http.ListenAndServe(app.hostPort(), nil)
 	app.logger.Error().Msg(err.Error())
 }
