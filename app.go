@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -50,7 +49,6 @@ func (app App) Run() {
 		Str("mode", app.env.Mode).
 		Msg("listening for connections")
 
-	fmt.Println("Server: https://go-todo.myshopify.io")
 	err := http.ListenAndServe(app.hostPort(), nil)
 	app.logger.Error().Msg(err.Error())
 }
