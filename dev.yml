@@ -3,17 +3,32 @@ name: go-todo
 type: go
 
 up:
+  - homebrew:
+      - mysql-client
+  - railgun
   - go:
       version: 1.17.2
       modules: true
       tools:
         - golint
         - errcheck
-  - railgun
+  - custom:
+      name: Setup MySQL test database
+      met?: mysql -u root -h go-todo.railgun -e 'SHOW DATABASES' | grep -q 'test'
+      meet: mysql -u root -h go-todo.railgun -e 'CREATE DATABASE test'
+  - custom:
+      name: Setup MySQL test database
+      met?: mysql -u root -h go-todo.railgun -e 'SHOW DATABASES' | grep -q 'development'
+      meet: mysql -u root -h go-todo.railgun -e 'CREATE DATABASE development'
+  - custom:
+      name: Load dependencies
+      met?: go mod tidy
+      meet: go mod tidy
 
 env:
   HOST: ""
   PORT: "8080"
+  DSN: "root@tcp(go-todo.railgun:3306)/development?charset=utf8mb4&collation=utf8mb4_unicode_ci"
   MODE: "development"
 
 # `dev run` runs `dev build` and then `dev run-built` if these are both defined.
@@ -26,6 +41,9 @@ commands:
       `dev run` is a special command that will run `dev build` and then `dev run-built` if they are both defined.
     run: ./go-todo
   test:
-    run: go test ./...
+    run: MODE=test go test ./...
   style:
     run: 'golint ./... && errcheck ./...'
+
+open:
+  app: http://go-todo.myshopify.io
