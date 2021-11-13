@@ -14,8 +14,9 @@ import (
 )
 
 type App struct {
+	*env.Environment
+
 	db     *sql.DB
-	env    *env.Environment
 	logger zerolog.Logger
 }
 
@@ -26,7 +27,7 @@ func NewApp(env *env.Environment) *App {
 		cw.TimeFormat = time.RFC822Z
 		logger = zerolog.New(cw).With().Timestamp().Logger()
 	}
-	return &App{env: env, logger: logger}
+	return &App{Environment: env, logger: logger}
 }
 
 func (app App) Run() {
@@ -47,7 +48,7 @@ func (app App) Run() {
 
 	app.logger.Info().
 		Str("host_port", app.hostPort()).
-		Str("mode", app.env.Get("MODE")).
+		Str("mode", app.Get("MODE")).
 		Msg("listening for connections")
 
 	err := http.ListenAndServe(app.hostPort(), nil)
@@ -55,5 +56,5 @@ func (app App) Run() {
 }
 
 func (app App) hostPort() string {
-	return net.JoinHostPort(app.env.Get("HOST"), app.env.Get("PORT"))
+	return net.JoinHostPort(app.Get("HOST"), app.Get("PORT"))
 }

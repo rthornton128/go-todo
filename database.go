@@ -8,7 +8,7 @@ import (
 )
 
 func (app *App) openDB() error {
-	cfg, err := mysql.ParseDSN(app.env.Get("DSN"))
+	cfg, err := mysql.ParseDSN(app.Get("DSN"))
 	if err != nil {
 		return err
 	}
