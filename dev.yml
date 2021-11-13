@@ -41,7 +41,9 @@ commands:
       `dev run` is a special command that will run `dev build` and then `dev run-built` if they are both defined.
     run: ./go-todo
   test:
-    run: MODE=test go test ./...
+    run: go test $@
+  test_all:
+    run: go test ./...
   style:
     run: 'golint ./... && errcheck ./...'
 
