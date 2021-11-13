@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"net"
 	"net/http"
 	"os"
@@ -11,12 +10,13 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rthornton128/go-todo/pkg/env"
+	"github.com/rthornton128/go-todo/pkg/store"
 )
 
 type App struct {
 	*env.Environment
 
-	db     *sql.DB
+	db     *store.Database
 	logger zerolog.Logger
 }
 
@@ -27,7 +27,14 @@ func NewApp(env *env.Environment) *App {
 		cw.TimeFormat = time.RFC822Z
 		logger = zerolog.New(cw).With().Timestamp().Logger()
 	}
-	return &App{Environment: env, logger: logger}
+
+	db, err := store.NewDatabase(env.Get("DSN"))
+	if err != nil {
+		logger.Fatal().Err(err).Msg("opening database")
+	}
+	logger.Info().Msg("connected to DB")
+
+	return &App{Environment: env, db: db, logger: logger}
 }
 
 func (app App) Run() {
@@ -38,13 +45,6 @@ func (app App) Run() {
 		app.logger.Print("Shutting down")
 		os.Exit(0)
 	}()
-
-	if err := app.openDB(); err != nil {
-		app.logger.Fatal().Err(err).Msg("failed to open DB")
-	}
-	defer app.closeDB()
-
-	app.logger.Info().Msg("Connected to DB")
 
 	app.logger.Info().
 		Str("host_port", app.hostPort()).
