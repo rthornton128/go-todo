@@ -5,11 +5,10 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func (app *App) openDB() error {
-	cfg, err := mysql.ParseDSN(app.env.DataSourceName)
+	cfg, err := mysql.ParseDSN(app.env.Get("DSN"))
 	if err != nil {
 		return err
 	}

@@ -10,15 +10,16 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/rthornton128/go-todo/pkg/env"
 )
 
 type App struct {
 	db     *sql.DB
-	env    *Environment
+	env    *env.Environment
 	logger zerolog.Logger
 }
 
-func NewApp(env *Environment) *App {
+func NewApp(env *env.Environment) *App {
 	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 	if env.IsDevelopment() {
 		cw := zerolog.NewConsoleWriter()
@@ -46,7 +47,7 @@ func (app App) Run() {
 
 	app.logger.Info().
 		Str("host_port", app.hostPort()).
-		Str("mode", app.env.Mode).
+		Str("mode", app.env.Get("MODE")).
 		Msg("listening for connections")
 
 	err := http.ListenAndServe(app.hostPort(), nil)
@@ -54,5 +55,5 @@ func (app App) Run() {
 }
 
 func (app App) hostPort() string {
-	return net.JoinHostPort(app.env.Host, app.env.Port)
+	return net.JoinHostPort(app.env.Get("HOST"), app.env.Get("PORT"))
 }
