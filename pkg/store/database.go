@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Database struct {
@@ -12,13 +12,17 @@ type Database struct {
 }
 
 func NewDatabase(dsn string) (db *Database, err error) {
-	cfg, err := mysql.ParseDSN(dsn)
+	pool, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return
 	}
 
-	pool, err := sql.Open("mysql", cfg.FormatDSN())
+	// Sanity check to confirm a connection can be made to the database.
+	// There appears to be a bug in either the sql, or more likely mysql,
+	// package that causes a race condition when Ping is called.
+	err = pool.Ping()
 	if err != nil {
+		pool.Close()
 		return
 	}
 
@@ -29,15 +33,6 @@ func NewDatabase(dsn string) (db *Database, err error) {
 	pool.SetMaxIdleConns(10)
 
 	db = &Database{pool: pool}
-	err = db.Ping()
 
 	return
-}
-
-func (db Database) Ping() error {
-	return db.pool.Ping()
-}
-
-func (db Database) Close() error {
-	return db.pool.Close()
 }

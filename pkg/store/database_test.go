@@ -16,14 +16,10 @@ func TestNewDatabaseBadDSN(t *testing.T) {
 	}
 }
 
-func TestNewDatabaseConnects(t *testing.T) {
-	db, err := store.NewDatabase(testDSN)
+func TestNewDatabase(t *testing.T) {
+	_, err := store.NewDatabase(testDSN)
 	if err != nil {
 		t.Errorf("Expected NewDatabase to not return an error, got: %s", err)
-	}
-
-	if err = db.Ping(); err != nil {
-		t.Errorf("Expected Ping to be nil, got: %s", err)
 	}
 }
 
@@ -32,13 +28,5 @@ func TestNewDatabaseBadDatabase(t *testing.T) {
 	_, err := store.NewDatabase(dsn)
 	if err == nil {
 		t.Error("Expected NewDatabase with invalid host and database to return error")
-	}
-}
-
-func TestNewDatabaseClose(t *testing.T) {
-	db, _ := store.NewDatabase(testDSN)
-	err := db.Close()
-	if err != nil {
-		t.Errorf("Expected Close to be nil, got: %s", err)
 	}
 }
