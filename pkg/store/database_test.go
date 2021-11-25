@@ -1,6 +1,7 @@
 package store_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/rthornton128/go-todo/pkg/store"
@@ -17,6 +18,10 @@ func TestNewDatabaseBadDSN(t *testing.T) {
 }
 
 func TestNewDatabase(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping test when running in CI")
+	}
+
 	_, err := store.NewDatabase(testDSN)
 	if err != nil {
 		t.Errorf("Expected NewDatabase to not return an error, got: %s", err)
